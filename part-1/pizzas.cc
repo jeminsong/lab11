@@ -1,25 +1,26 @@
-// TODO add a header
+// Jemin Song
+// jeminsong0119@csu.fullerton.edu
+// @jeminsong
+// Partners: @Card1n
+
+#include "pizzas.h"
 
 #include <fstream>
 #include <iostream>
-
-#include "pizzas.h"
 
 std::vector<std::vector<std::string>> ReadCSV(const std::string& csv_filename,
                                               int columns) {
   std::vector<std::vector<std::string>> table;
   std::ifstream file(csv_filename);
 
-  // read each row
   while (file.good()) {
     std::vector<std::string> row;
-    // read each column
     for (int i = 0; i < columns; ++i) {
       std::string cell;
-      file.ignore(1, '"');  // leading quote
+      file.ignore(1, '"');
       std::getline(file, cell, '"');
       if (i < (columns - 1)) {
-        file.ignore(1, ',');  // comma
+        file.ignore(1, ',');
       }
       row.push_back(cell);
     }
@@ -27,77 +28,41 @@ std::vector<std::vector<std::string>> ReadCSV(const std::string& csv_filename,
       table.push_back(row);
     }
   }
-  // Return the vector of strings that contains the data from the CSV file
   return table;
 }
 
-// TODO: complete the definition of this constructor.
-// Since this is a constructor, it should use a member initialization
-// list to initialize data members.
-// When you are done, delete this comment.
-Pizza::Pizza(std::string pizza_id, double price, int calories) {}
+Pizza::Pizza(std::string pizza_id, double price, int calories)
+    : pizza_id_(std::move(pizza_id)), price_(price), calories_(calories) {}
 
-// TODO: complete the definition of this constructor.
-// Since this is a constructor, it should use a member initialization list
-// to initialize data members.
-// When you are done, delete this comment.
-Pizza::Pizza() {}
+Pizza::Pizza() : price_(0.0), calories_(0) {}
 
-// TODO: write statements to implement this function, and delete
-// this comment.
-// Hint: This is a simple accessor function. The function definition only
-// needs to be a single statement.
-std::string Pizza::PizzaID() const {
-  // TODO: delete the return statement below
-  return "";
-}
+std::string Pizza::PizzaID() const { return pizza_id_; }
 
-// TODO: write statements to implement this function, and delete
-// this comment.
-// Hint: This is a simple accessor function. The function definition
-// only needs to be a single statement.
-double Pizza::Price() const {
-  // TODO: delete the return statement below
-  return 0.0;
-}
+double Pizza::Price() const { return price_; }
 
-// TODO: write statements to implement this function, and delete
-// this comment.
-// Hint: This is a simple accessor function. The function definition
-// only needs to be a single statement.
-int Pizza::Calories() const {
-  // TODO: delete the return statement below
-  return 0;
-}
+int Pizza::Calories() const { return calories_; }
 
-// TODO: write statements to implement this function, and delete
-// this comment.
-// Hint: the price-per-2000 calories is the ratio between the
-// price of that pizza and its number of calories it has,
-// multiplied by 2000.
 double Pizza::PricePer2000Calories() const {
-  // TODO: delete the return statement below
-  return 0;
+  return (price_ / calories_) * 2000.0;
 }
 
-// TODO: write statements to implement this function, and delete
-// this comment.
 std::vector<Pizza> ReadPizzas(const std::string& csv_filename) {
-  // Create an empty vector of Pizzas
-  // Call ReadCSV to create a 2D vector of strings
-  // Loop through each row of the CSV but skip the header row
-  // which is the first row, that contains the names of the
-  // columns, i.e. do not read the first row
-  // - Read the vector of strings at row j
-  // - Retrieve the pizza_id (as a string) from column 1
-  // - Retrieve the price (as a string) from column 3
-  // - Retrieve the calories (as a string) from column 4
-  // - Convert the string at column 3 into a double
-  // - Convert the string at column 4 into an integer
-  // - Create an object of class Pizza with the data from columns 1, 3, and 4
-  // - Add the object with push_back to the vector of objects of class Pizza
-  // TODO: delete the return statement below
-  return std::vector<Pizza>{};
-  // and replace it with one that actually works, which is the
-  // vector of pizzas
+  std::vector<Pizza> pizzas;
+  std::vector<std::vector<std::string>> pizza_table = ReadCSV(csv_filename, 9);
+  int count{2};
+  for (int k = 1; k < pizza_table.size(); ++k) {
+    std::string string_pizza_id{pizza_table[k][1]};
+    std::string string_price{pizza_table[k][3]};
+    std::string string_calories{pizza_table[k][4]};
+    count++;
+    double price = std::stod(string_price);
+    int calories = std::stoi(string_calories);
+    Pizza new_pizza(string_pizza_id, price, calories);
+    std::cout << count << std::endl;
+    std::cout << "Name: " << new_pizza.PizzaID() << std::endl;
+    std::cout << "Price: " << new_pizza.Price() << std::endl;
+    std::cout << "Calories: " << new_pizza.Calories() << std::endl << std::endl;
+    pizzas.push_back(new_pizza);
+  }
+  return pizzas;
 }
